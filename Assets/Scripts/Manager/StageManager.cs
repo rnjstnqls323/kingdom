@@ -1,11 +1,16 @@
 using UnityEngine;
 
-public class StageManager
+public class StageManager: MonoBehaviour
 {
     WorldData _worldData;
     private PoolingManager _stageButtons;
     GameObject _buttonParent;
-    public void Init(int stageNum)
+
+    private void Start()
+    {
+        Init(100);
+    }
+    private void Init(int stageNum)
     {
         _buttonParent = GameObject.Find("Buttons");
         _worldData = DataManager.Instance.GetWorldData(stageNum);
