@@ -2,28 +2,15 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public struct Index2
-{
-    public int y;
-    public int x;
-    public Index2(int y, int x)
-    {
-        this.y = y; 
-        this.x = x;
-    }
-    //필요없을듯
-}
 
 public class CharacterManager : Singleton<CharacterManager>
 {
-    //일단 3*3 으로 잡고 캐릭터 배치하자 애초에 리스트로 안넘겨도되겠네
-
     private List<int> _setCharacterList = new List<int>(); 
 
     public List<int> Character
     { get { return _setCharacterList; } }
 
-    public void SetCharacter(int key)
+    public void SetCharacter(int key)//이렇게 삽입하면 앞부터 채워진다 고민함 해보자
     {
         bool isInsert = false;
         CharacterData data = DataManager.Instance.GetCharacterData(key);
