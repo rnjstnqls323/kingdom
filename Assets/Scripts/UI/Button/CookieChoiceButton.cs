@@ -30,8 +30,7 @@ public class CookieChoiceButton : ParentButton
     {
         if (!_isSet)
         {
-            CharacterManager.Instance.SetCharacter(_key); //깊이감 줘야되는데 넣으면서 정렬을할까? 
-            _isSet = true;
+            _isSet = CharacterManager.Instance.SetCharacter(_key); //깊이감 줘야되는데 넣으면서 정렬을할까? 
         }
         else
         {

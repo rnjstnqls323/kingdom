@@ -14,9 +14,9 @@ public class CharacterManager : Singleton<CharacterManager>
     public List<int> Character
     { get { return _setCharacterList; } }
 
-    public void SetCharacter(int key)
+    public bool SetCharacter(int key)
     {
-        if (_characterCount == 5) return;
+        if (_characterCount == 5) return false;
         _characterCount++;
         CookieData cookie = DataManager.Instance.GetCookieData(key);
         
@@ -38,6 +38,7 @@ public class CharacterManager : Singleton<CharacterManager>
         Debug.Log(_characterArr[1, 0] + "|" + _characterArr[1, 1] + "|" + _characterArr[1, 2]);
         Debug.Log(_characterArr[2, 0] + "|" + _characterArr[2, 1] + "|" + _characterArr[2, 2]);
         Debug.Log("---------------------------------------------------");
+        return true;
     }
 
     public void SetOffCharacter(int key)
@@ -106,45 +107,66 @@ public class CharacterManager : Singleton<CharacterManager>
             return;
         }
 
-        if(num>0)
+
+        if (num > 0 && num != 2)
         {
             List<CharacterData> data = new List<CharacterData>();
-            data[0] = DataManager.Instance.GetCharacterData(_characterArr[0, num]);
-            data[1] = DataManager.Instance.GetCharacterData(_characterArr[2, num]);
-            data[2] = DataManager.Instance.GetCharacterData(key);
-            float min = 1000;
+            data.Add(DataManager.Instance.GetCharacterData(_characterArr[0, num]));
+            data.Add(DataManager.Instance.GetCharacterData(_characterArr[2, num]));
+            data.Add(DataManager.Instance.GetCharacterData(key));
+            float min = data[2].Defense;
             int temp = key;
-            
-            foreach(CharacterData dt in data)
+
+            if (data[0].Defense < min)
             {
-                if(dt.Defense < min)
-                {
-                    min = dt.Defense;
-                    temp = dt.Key;
-                }
+                min = data[0].Defense;
+                temp = _characterArr[0, num];
+                _characterArr[0, num] = key;
             }
+            else if (data[1].Defense < min)
+            {
+                min = data[1].Defense;
+
+                temp = _characterArr[2, num];
+                _characterArr[2, num] = key;
+                key = temp;
+            }
+
             SettingPosition(num - 1, temp);
             return;
+            Debug.Log("1");
         }
-        else
+        else if (num < 2 && num != 0)
         {
+            Debug.Log("3");
             List<CharacterData> data = new List<CharacterData>();
-            data[0] = DataManager.Instance.GetCharacterData(_characterArr[0, num]);
-            data[1] = DataManager.Instance.GetCharacterData(_characterArr[2, num]);
-            data[2] = DataManager.Instance.GetCharacterData(key);
+            data.Add(DataManager.Instance.GetCharacterData(_characterArr[0, num]));
+            data.Add(DataManager.Instance.GetCharacterData(_characterArr[2, num]));
+            data.Add(DataManager.Instance.GetCharacterData(key));
             float max = 0;
             int temp = key;
 
-            foreach (CharacterData dt in data)
+            if (data[0].Defense > max)
             {
-                if (dt.Defense > max)
-                {
-                    max = dt.Defense;
-                    temp = dt.Key;
-                }
+                max = data[0].Defense;
+                temp = _characterArr[0, num];
+                _characterArr[0, num] = key;
+                key = temp;
             }
+            else if (data[1].Defense > max)
+            {
+                max = data[1].Defense;
+
+                temp = _characterArr[2, num];
+                _characterArr[2, num] = key;
+                key = temp;
+            }
+
             SettingPosition(num + 1, temp);
             return;
         }
+
+        else
+            Debug.Log("에바ㅣ");
     }
 }
