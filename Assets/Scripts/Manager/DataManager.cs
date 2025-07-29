@@ -78,7 +78,7 @@ public class DataManager : Singleton<DataManager>
     }
     public CharacterData GetCharacterData(int key)
     {
-        if (_characterDatas.TryGetValue(key, out CharacterData data))
+        if( _characterDatas.TryGetValue(key,out CharacterData data))
         {
             return data;
         }
@@ -86,7 +86,7 @@ public class DataManager : Singleton<DataManager>
     }
     public CookieData GetCookieData(int key)
     {
-        if (_cookieDatas.TryGetValue(key, out CookieData data))
+        if(_cookieDatas.TryGetValue(key,out CookieData data))
         {
             return data;
         }
