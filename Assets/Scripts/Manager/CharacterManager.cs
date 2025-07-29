@@ -11,6 +11,7 @@ public class CharacterManager : Singleton<CharacterManager>
     private int _characterCount = 0;
     private int[,] _characterArr = new int[3,3];
 
+    private int _characterTypeNum = 0;
     public List<int> Character
     { get { return _setCharacterList; } }
 
@@ -23,12 +24,15 @@ public class CharacterManager : Singleton<CharacterManager>
         switch (cookie.Type)
         {
             case 1: //전방
+                _characterTypeNum = 1;
                 SettingPosition(2,key);
                 break;
             case 2: //중앙
+                _characterTypeNum = 2;
                 SettingPosition(1, key);
                 break;
             case 3://후방
+                _characterTypeNum = 3;
                 SettingPosition(0, key);
                 break;
 
@@ -108,7 +112,7 @@ public class CharacterManager : Singleton<CharacterManager>
         }
 
 
-        if (num > 0 && num != 2)
+        if (num > 0 && _characterTypeNum != 3)
         {
             List<CharacterData> data = new List<CharacterData>();
             data.Add(DataManager.Instance.GetCharacterData(_characterArr[0, num]));
@@ -133,10 +137,11 @@ public class CharacterManager : Singleton<CharacterManager>
             }
 
             SettingPosition(num - 1, temp);
-            return;
             Debug.Log("1");
+            return;
+
         }
-        else if (num < 2 && num != 0)
+        else if (num < 2 && _characterTypeNum != 1)
         {
             Debug.Log("3");
             List<CharacterData> data = new List<CharacterData>();
@@ -165,8 +170,5 @@ public class CharacterManager : Singleton<CharacterManager>
             SettingPosition(num + 1, temp);
             return;
         }
-
-        else
-            Debug.Log("에바ㅣ");
     }
 }

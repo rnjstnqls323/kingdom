@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 586660993}
   - component: {fileID: 586660992}
   m_Layer: 5
-  m_Name: CookiesPanel
+  m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -29,7 +29,7 @@ public class CookieSettingManager : MonoBehaviour
         _buttonParent = GameObject.Find("Panel/CookieButtons/Viewport/Content");
         _cookieDatas = DataManager.Instance.GetAllCookieData();
         CreateButtons();
-        CreateCookies();
+        //CreateCookies();
     }
     private void CreateButtons()
     {
