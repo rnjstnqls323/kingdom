@@ -12,12 +12,18 @@ public struct CharacterData
     public float Defense;
     public float Critical;
     public float Speed;
+    public float Cooltime;
+    public string Grade;
+    public string SkillName;
+    public int Skill1;
+    public int Skill2;
 }
 public struct CookieData
 {
     public int Key;
     public int Type;
     public string Name;
+    public int Level;
     public float Hp;
     public float LevelPerHp;
     public float LevelPerAttack;
@@ -58,12 +64,14 @@ public struct StageData
     public int Wave3;
 }
 
+
 public enum CharState
 {
     Idle,
-    Move,
-    Attack,
-    Skill,
+    Run,
+    Skill1,
+    Skill2,
+    Skill3,
     Idle_front,
     Victory,
     Lose
@@ -74,29 +82,26 @@ public class DataManager : Singleton<DataManager>
     private Dictionary<int, CharacterData> _characterDatas = new Dictionary<int, CharacterData>();
     private Dictionary<int, CookieData> _cookieDatas = new Dictionary<int, CookieData>();
     private Dictionary<int, InventoryData> _inventoryDatas = new Dictionary<int, InventoryData>();
+    //캐릭터 구현필요
+
+    public static Dictionary<int, System.Type> skillMap = new Dictionary<int, System.Type>
+    {
+        { 101, typeof(BaseAttack) },
+        { 102, typeof(CandyAttack) },
+    };
 
 
     private Dictionary<int, WorldData> _worldData = new Dictionary<int, WorldData>();
     private Dictionary<int, StageData> _stageData = new Dictionary<int, StageData>();
 
-    public WorldData GetWorldData(int key)
+    public Dictionary<int, WorldData> GetAllWorldData()
     {
-        if (_worldData.TryGetValue(key, out WorldData data))
-        {
-            return data;
-        }
-
-        return default(WorldData);
+        return _worldData;
     }
 
-    public StageData GetStageData(int key)
+    public Dictionary<int, StageData> GetAllStageData()
     {
-        if (_stageData.TryGetValue(key, out StageData data))
-        {
-            return data;
-        }
-
-        return default(StageData);
+        return _stageData;
     }
     public CharacterData GetCharacterData(int key)
     {
@@ -114,11 +119,29 @@ public class DataManager : Singleton<DataManager>
         }
         return default(CookieData);
     }
+
     public Dictionary<int, InventoryData> GetAllHaveCookieData()
     {
-       return _inventoryDatas;
+        return _inventoryDatas;
     }
-
+    public List<CookieData> GetAllCookieData()
+    {
+        List<CookieData> list = new List<CookieData>();
+        foreach (CookieData data in _cookieDatas.Values)
+        {
+            list.Add(data);
+        }
+        return list;
+    }
+    public List<CharacterData> GetAllCharacterData()
+    {
+        List<CharacterData> list = new List<CharacterData>();
+        foreach (CharacterData data in _characterDatas.Values)
+        {
+            list.Add(data);
+        }
+        return list;
+    }
 
     public void LoadAllData()
     {
@@ -150,10 +173,11 @@ public class DataManager : Singleton<DataManager>
             data.Name = datas[2];
             data.Level = int.Parse(datas[3]);
             data.Defense = float.Parse(datas[4]);
-            
+
             _inventoryDatas.Add(data.Key, data);
         }
     }
+
     private void LoadCharacterData()
     {
         TextAsset textAsset = Resources.Load<TextAsset>("Tables/CharacterTable");
@@ -165,7 +189,7 @@ public class DataManager : Singleton<DataManager>
         }
         string[] lines = textAsset.text.Split("\r\n");
 
-        for (int i = 1; i < lines.Length; i++)
+        for (int i = 2; i < lines.Length; i++)
         {
             string[] datas = lines[i].Split(',');
             if (datas.Length <=1) continue;
@@ -178,7 +202,11 @@ public class DataManager : Singleton<DataManager>
             data.Defense = float.Parse(datas[5]);
             data.Critical = float.Parse(datas[6]);
             data.Speed = float.Parse(datas[7]);
-
+            data.Cooltime = float.Parse(datas[8]);
+            data.Grade = datas[9];
+            data.SkillName = datas[10];
+            data.Skill1 = int.Parse(datas[11]);
+            data.Skill2 = int.Parse(datas[12]);
 
             _characterDatas.Add(data.Key, data);
         }
@@ -202,12 +230,13 @@ public class DataManager : Singleton<DataManager>
             data.Key = int.Parse(datas[0]);
             data.Type = int.Parse(datas[1]);
             data.Name = datas[2];
-            data.Hp = float.Parse(datas[3]);
+            data.Level = int.Parse(datas[3]);
+            data.Hp = float.Parse(datas[4]);
 
-            data.LevelPerHp = float.Parse(datas[4]);
-            data.LevelPerAttack = float.Parse(datas[5]);
-            data.LevelPerDefense = float.Parse(datas[6]);
-            data.LevelPerCritical = float.Parse(datas[7]);
+            data.LevelPerHp = float.Parse(datas[5]);
+            data.LevelPerAttack = float.Parse(datas[6]);
+            data.LevelPerDefense = float.Parse(datas[7]);
+            data.LevelPerCritical = float.Parse(datas[8]);
             
 
 

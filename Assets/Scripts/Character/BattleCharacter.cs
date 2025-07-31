@@ -10,9 +10,9 @@ public class BattleCharacter : Character
 
     private float _attackTimer = 0;
     private readonly float AttackTime = 1.0f;
-    private CharacterData _charData;
+//    private CharacterData _charData;
     private Vector3 basePos;
-
+    private GameObject _target;
 
     float range;
     float speed = 1.0f;
@@ -26,8 +26,8 @@ public class BattleCharacter : Character
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (_charData.Type == 0) range = 1.0f;
-        else if (_charData.Type == 1) range = 3.0f;
+        if (CharData.Type == 0) range = 1.0f;
+        else if (CharData.Type == 1) range = 3.0f;
 
     }
     void Spawn(GameObject basePosition)
@@ -38,7 +38,7 @@ public class BattleCharacter : Character
     void Update()
     {
         print(State);
-        if (State == CharState.Attack || State == CharState.Skill) return;
+//        if (State == CharState.Attack || State == CharState.Skill) return;
 
         Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, range);
         foreach (Collider2D target in targets)
@@ -46,6 +46,7 @@ public class BattleCharacter : Character
             if (target.CompareTag("Enemy"))
             {
                 Idle();
+                _target = target.gameObject;
                 return;
             }
         }
@@ -56,12 +57,16 @@ public class BattleCharacter : Character
 
     private void Attack()
     {
-        State = CharState.Attack;
+//        State = CharState.Attack;
+        if (CharData.Type == 1)
+        {
+
+        }
 
     }
     private void Move()
     {
-        State = CharState.Move;
+//        State = CharState.Move;
 
         Vector3 direction = (basePos - transform.position).normalized;
         transform.Translate(direction * speed);
@@ -92,4 +97,19 @@ public class BattleCharacter : Character
         Gizmos.DrawWireSphere(transform.position, 3.0f);
         Gizmos.DrawWireSphere(transform.position, 5.0f);
     }
+
+    private void MeleAttack()
+    {
+        float damage = CharData.Attack;
+        _target.GetComponent<BattleCharacter>().HitDamage(damage);
+    }
+    private void RangeAttack()
+    {
+        
+    }
+    private void MagicAttack()
+    {
+
+    }
+
 }
