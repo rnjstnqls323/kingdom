@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public struct CharacterData
 {
     public int Key;
@@ -17,13 +18,25 @@ public struct CookieData
     public int Key;
     public int Type;
     public string Name;
-    public int Level;
     public float Hp;
     public float LevelPerHp;
     public float LevelPerAttack;
     public float LevelPerDefense;
     public float LevelPerCritical;
 
+}
+public struct InventoryData
+{
+    public int Key;
+    public int Type;
+    public string Name;
+    public int Level;
+    public float Defense;
+
+    public void LevelUp()
+    {
+        Level += 1;
+    }
 }
 
 public struct WorldData
@@ -45,13 +58,22 @@ public struct StageData
     public int Wave3;
 }
 
+public enum CharState
+{
+    Idle,
+    Move,
+    Attack,
+    Skill,
+    Idle_front,
+    Victory,
+    Lose
+}
+
 public class DataManager : Singleton<DataManager>
 {
     private Dictionary<int, CharacterData> _characterDatas = new Dictionary<int, CharacterData>();
     private Dictionary<int, CookieData> _cookieDatas = new Dictionary<int, CookieData>();
-
-    //캐릭터 구현필요
-
+    private Dictionary<int, InventoryData> _inventoryDatas = new Dictionary<int, InventoryData>();
 
 
     private Dictionary<int, WorldData> _worldData = new Dictionary<int, WorldData>();
@@ -92,15 +114,11 @@ public class DataManager : Singleton<DataManager>
         }
         return default(CookieData);
     }
-    public List<CookieData> GetAllCookieData()
+    public Dictionary<int, InventoryData> GetAllHaveCookieData()
     {
-        List<CookieData> list = new List<CookieData>();
-        foreach (CookieData data in _cookieDatas.Values)
-        {
-            list.Add(data);
-        }
-        return list;
+       return _inventoryDatas;
     }
+
 
     public void LoadAllData()
     {
@@ -108,8 +126,34 @@ public class DataManager : Singleton<DataManager>
         LoadStageData();
         LoadCookieData();
         LoadCharacterData();
+        LoadInventoryData();
     }
 
+    private void LoadInventoryData()
+    {
+        TextAsset textAsset = Resources.Load<TextAsset>("Tables/InventoryTable");
+
+        if (textAsset == null)
+        {
+            Debug.LogError("WorldTable not found in Resources/Tables.");
+            return;
+        }
+        string[] lines = textAsset.text.Split("\r\n");
+
+        for (int i = 1; i < lines.Length; i++)
+        {
+            string[] datas = lines[i].Split(',');
+            if (datas.Length <= 1) continue;
+            InventoryData data;
+            data.Key = int.Parse(datas[0]);
+            data.Type = int.Parse(datas[1]);
+            data.Name = datas[2];
+            data.Level = int.Parse(datas[3]);
+            data.Defense = float.Parse(datas[4]);
+            
+            _inventoryDatas.Add(data.Key, data);
+        }
+    }
     private void LoadCharacterData()
     {
         TextAsset textAsset = Resources.Load<TextAsset>("Tables/CharacterTable");
@@ -124,7 +168,7 @@ public class DataManager : Singleton<DataManager>
         for (int i = 1; i < lines.Length; i++)
         {
             string[] datas = lines[i].Split(',');
-
+            if (datas.Length <=1) continue;
             CharacterData data;
             data.Key = int.Parse(datas[0]);
             data.Type = int.Parse(datas[1]);
@@ -153,18 +197,17 @@ public class DataManager : Singleton<DataManager>
         for (int i = 1; i < lines.Length; i++)
         {
             string[] datas = lines[i].Split(',');
-
+            if (datas.Length <=1) continue;
             CookieData data;
             data.Key = int.Parse(datas[0]);
             data.Type = int.Parse(datas[1]);
             data.Name = datas[2];
-            data.Level = int.Parse(datas[3]);
-            data.Hp = float.Parse(datas[4]);
+            data.Hp = float.Parse(datas[3]);
 
-            data.LevelPerHp = float.Parse(datas[5]);
-            data.LevelPerAttack = float.Parse(datas[6]);
-            data.LevelPerDefense = float.Parse(datas[7]);
-            data.LevelPerCritical = float.Parse(datas[8]);
+            data.LevelPerHp = float.Parse(datas[4]);
+            data.LevelPerAttack = float.Parse(datas[5]);
+            data.LevelPerDefense = float.Parse(datas[6]);
+            data.LevelPerCritical = float.Parse(datas[7]);
             
 
 
@@ -185,7 +228,7 @@ public class DataManager : Singleton<DataManager>
         for (int i = 1; i < lines.Length; i++)
         {
             string[] datas = lines[i].Split(',');
-
+            if (datas.Length <= 1) continue;
             WorldData data;
             data.Key = int.Parse(datas[0]);
             data.World = int.Parse(datas[1]);
@@ -211,7 +254,7 @@ public class DataManager : Singleton<DataManager>
         for (int i = 1; i < lines.Length; i++)
         {
             string[] datas = lines[i].Split(',');
-
+            if (datas.Length <= 1) continue;
             StageData data;
             data.Key = int.Parse(datas[0]);
             data.World = int.Parse(datas[1]);

@@ -1,37 +1,38 @@
+using System.Collections.Generic;
 using Spine.Unity;
 using Unity.Multiplayer.Center.Common.Analytics;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Character : MonoBehaviour
 {
     [SerializeField]
-    private int key;
+    private CharState _state;
+    public CharState State { get { return _state; } set { _state = value; } }
     [SerializeField]
-    public CharacterAnimations characterAnimations;
-    private SkeletonDataAsset _skeletonDataAsset;
-    private SkeletonAnimation _skeletonAnimation;
-    Spine.AnimationState state;
-
+    private CharacterData _charData;
+    public CharacterData CharData { get { return _charData; } set { _charData = value; } }
 
     private void Awake()
     {
-        _skeletonDataAsset = characterAnimations.GetAnimation(key);
-        _skeletonAnimation = GetComponent<SkeletonAnimation>();
-        _skeletonAnimation.skeletonDataAsset = _skeletonDataAsset;
-        state = _skeletonAnimation.AnimationState;
-        //        _skeletonAnimation.s
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        state.AddAnimation(0, "idle", true,0);
         
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+     
+
     }
+
+
+
 }
